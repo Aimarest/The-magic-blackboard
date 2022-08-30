@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+ 
+<h1>The magic blackboard</h1>
+
+<section>
+    <canvas id="draw" width="800" height="800"></canvas>
+</section>
+
+<script>
+const canvas = document.querySelector('#draw');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+ctx.strokeStyle = '#BADA55';
+ctx.lineJoin = 'square';
+ctx.lineCap = 'round';
+ctx.lineWidth = 100;
+
+
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+let hue = 0;
+let direction = true;
+
+function draw(e) {
+  if (!isDrawing) return; 
+  console.log(e);
+  ctx.strokeStyle = `hsl(${hue}, 100%, 60%)`;
+  ctx.beginPath();
+  // start from
+  ctx.moveTo(lastX, lastY);
+  // go to
+  ctx.lineTo(e.offsetX, e.offsetY);
+  ctx.stroke();
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+
+  hue++;
+  if (hue >= 360) {
+    hue = 0;
+  }
+  if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+    direction = !direction;
+  }
+
+  if(direction) {
+    ctx.lineWidth++;
+  } else {
+    ctx.lineWidth--;
+  }
+
+}
+
+canvas.addEventListener('mousedown', (e) => {
+  isDrawing = true;
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+});
+
+
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', () => isDrawing = false);
+canvas.addEventListener('mouseout', () => isDrawing = false);
+
+</script>
+
+<style>
+  html, body {
+   
+    margin: 0;
+    background-color:whitesmoke;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1{
+    text-align: center;
+    font-size: 3rem;
+    color:rgb(255, 0, 179);
+    text-shadow: 0 0 0.5px rgb(192, 14, 236), 0 0 1px rgb(198, 8, 223),
+      0 0 2px rgb(201, 14, 218), 0 0 4px rgb(153, 36, 177),
+      0 0 8px rgb(117, 38, 127), 0 0 16px rgb(89, 29, 104),
+      0 0 32px rgb(44, 14, 58);
+  }
+  section {
+    background-color: black;
+    width: 90vw;
+   border: 10px solid rgb(255, 0, 179);
+    box-shadow:  0 0 0.5px rgb(192, 14, 236), 0 0 1px rgb(198, 8, 223),
+      0 0 2px rgb(201, 14, 218), 0 0 4px rgb(153, 36, 177),
+      0 0 8px rgb(117, 38, 127), 0 0 16px rgb(89, 29, 104),
+      0 0 32px rgb(44, 14, 58);
+     
+  }
+  canvas{
+    width:100%;
+    cursor: pointer;
+
+  }
+</style>
+
+</body>
+</html>
